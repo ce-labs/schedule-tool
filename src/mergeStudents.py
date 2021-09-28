@@ -1,8 +1,8 @@
 # Schedule Tool
-# File name: mergeStudentsResults.py
+# File name: mergeStudents.py
 # Date last modified: 08/03/2021
 # Description: This script it's for combining all students excel sheets, and sorts the  data by the oldest excel file.
-# Notes: Don't change this python name, Don't delete  "Resultados" folder
+# Notes: Don't change this python name, Don't delete  "results" folder
 
 import os
 import pandas as pd  # For installation with pip -> "pip install pandas", "pip install openpyxl"," pip install xlrd"
@@ -26,7 +26,7 @@ def getListFiles(pathFiles):
     listFiles = filter(os.path.isfile, os.listdir(pathFiles))  # Get file sorted by the oldest
     listFiles = [os.path.join(pathFiles, f) for f in listFiles]  # add path to each file
     listFiles.sort(key=lambda x: os.path.getmtime(x))
-    print("2. Adición de cada uno de los archivos  en la carpeta de ExcelRecibidos a una lista interna.")
+    print("2. Adición de cada uno de los archivos  en la carpeta de data a una lista interna.")
     """for i in listFiles:  # Must only show excel files
         print(i)"""
     return listFiles
@@ -50,11 +50,11 @@ def mergeExcels(pathFinalFile, tempPath, sourceFiles):
 
 
 def main():
-    print("\n-------- Inicio de ejecución sobre mergeStudentsResults.py ----------------------------------------\n")
+    print("\n-------- Inicio de ejecución sobre mergeStudents.py ----------------------------------------\n")
     actualPath = os.path.dirname(__file__)  # Get actual file path
     tempPath = actualPath + r'\tempFiles'
-    sourceFiles = actualPath + r'\ExcelRecibidos'
-    pathFinalFile = actualPath + r'\Resultados\horariosUnidos_SinProcesar.xlsx'
+    sourceFiles = actualPath + r'\data'
+    pathFinalFile = actualPath + r'\results\horariosUnidos_SinProcesar.xlsx'
     mergeExcels(pathFinalFile, tempPath, sourceFiles)
 
 

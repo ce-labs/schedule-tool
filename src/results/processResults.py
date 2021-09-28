@@ -8,26 +8,29 @@ import pandas as pd  # For installation with pip -> "pip install pandas", "pip i
 
 
 def getListFiles(nameFileResult):
-    actualPath = os.path.dirname(__file__)  # Get actual file path
-    listFiles = sorted(os.listdir(actualPath), key=os.path.getctime)  # Get file sorted by the oldest
+    actualPath = os.path.dirname(__file__)  # Get current file path
+    # listFiles = sorted(os.listdir(actualPath), key=os.path.getctime)  # Get file sorted by the oldest
+    listFiles = sorted(os.listdir(actualPath))
     # Remove files in use from the list
     listFiles.remove("processResults.py")
-    listFiles.remove("RUN-Scripts.py")
-    listFiles.remove("horariosDisponibles.txt")
+    # listFiles.remove("horariosDisponibles.txt")
     listFiles.remove("notInList.xlsx")
     try:
         listFiles.remove(nameFileResult)  # Delete this python file from list
     except:
         1 + 1
     for i in listFiles:  # It should show only excel files
-        print("1. Lectura del archivo horariosUnidos_SinProcesar.xlxs")
+        pass
+        # print("1. Lectura del archivo horariosUnidos_SinProcesar.xlxs" )
         # print("i: " + i)
+    print("1. Lectura del archivo horariosUnidos_SinProcesar.xlxs")
     return listFiles
 
 
 def scheduleData():  # Return matrix with all the days and hours
     dfCondition = []
-    f = open("horariosDisponibles.txt", "r", encoding='utf-8')
+    actualPath = os.path.dirname(__file__)
+    f = open(actualPath + r'\assets\horariosDisponibles.txt', "r", encoding='utf-8')
     txtLine = f.readline()
     while (txtLine != "ETX"):  # change "ETX" to "", if you want to delete ETX line of file
         values = txtLine.split(",")  # position 0 -> Day   position 1 -> hours
@@ -169,7 +172,10 @@ def addOutStudents(filteredList, outList):
 def getDataExcel(nameFileResult):
     listStudentFiles = getListFiles(nameFileResult)
 
-    dataExcel = pd.read_excel(listStudentFiles[-1])  # Get newest excel file
+    actualPath = os.path.dirname(__file__)
+    actualFile = actualPath + r'\horariosUnidos_SinProcesar.xlsx'   # Get current file path
+    # print(actualPath + r'\' + listStudentFiles[-1])
+    dataExcel = pd.read_excel(actualFile)  # Get newest excel file
     dataFrame = pd.DataFrame(dataExcel, columns=['Unnamed: 0', 'Unnamed: 1', 'Unnamed: 2', 'Unnamed: 3'])
 
     dfConditions = scheduleData()  # Get all conditions values
@@ -198,7 +204,7 @@ def getDataExcel(nameFileResult):
     dF = pd.DataFrame.from_records(filteredStudentsList, columns=['Unnamed: 0', 'Unnamed: 1', 'Unnamed: 2', 'Unnamed: 3'])
 
     notInListDF = pd.DataFrame.from_records(outList, columns=['Unnamed: 0', 'Unnamed: 1', 'Unnamed: 2', 'Unnamed: 3'])
-    writer = pd.ExcelWriter('notInList.xlsx')
+    writer = pd.ExcelWriter(actualPath + r'\notInList.xlsx')
     notInListDF.to_excel(writer, sheet_name='welcome', index=False)
     writer.save()
 
@@ -228,9 +234,11 @@ def getDataExcel(nameFileResult):
 
 def main():
     print("\n-------- Inicio de ejecución sobre processResults.py ----------------------------------------------\n")
-    getDataExcel('HorarioCompleto.xlsx')
-    print("\n-------- Proceso terminado exitosamente.")
+    finalSchedule = os.path.dirname(__file__) + r'\HorarioCompleto.xlsx'
+    getDataExcel(finalSchedule)
+    print("\n-------- Proceso terminado exitosamente -----------------------------------------------------------")
     print("\nPuede ver el horario general en el archivo HorarioCompleto.xlsx y los resagados en notInList.xlsx")
+    exit(True)
 
 
 main()
